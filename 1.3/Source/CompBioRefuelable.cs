@@ -28,6 +28,7 @@ namespace BioReactor
             {
                 return;
             }
+
             component.comps.Add(this);
         }
         public override void PostDeSpawn(Map map)

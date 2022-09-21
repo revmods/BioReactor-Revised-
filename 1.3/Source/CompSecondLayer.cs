@@ -17,7 +17,8 @@ namespace BioReactor
                 {
                     if (Props.graphicData == null)
                     {
-                        Log.ErrorOnce(this.parent.def + "BioReactor - has no SecondLayer graphicData but we are trying to access it.", 764532, false);
+                        //Log.ErrorOnce(this.parent.def + "BioReactor - has no SecondLayer graphicData but we are trying to access it.", 764532, false);
+                        Log.ErrorOnce(this.parent.def + "BioReactor - has no SecondLayer graphicData but we are trying to access it.", 764532);
                         return BaseContent.BadGraphic;
                     }
                     graphicInt = Props.graphicData.GraphicColoredFor(this.parent);
@@ -37,11 +38,17 @@ namespace BioReactor
         
         public override void PostDraw()
         {
+            /*
             if (parent.Rotation == Rot4.South)
             {
                 Graphic.Draw(GenThing.TrueCenter(this.parent.Position, this.parent.Rotation, this.parent.def.size, Props.Altitude) + offset, this.parent.Rotation, this.parent, 0f);
                 return;
             }
+            */
+
+            Graphic.Draw(GenThing.TrueCenter(this.parent.Position, this.parent.Rotation, this.parent.def.size, Props.Altitude) + offset, Rot4.South, this.parent, 0f);
+
+            base.PostDraw();
         }
     }
 

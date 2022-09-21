@@ -3,8 +3,9 @@
 
   <!-- 2X2 Size -->
 
-  <BioReactor.label>Bio Reactor</BioReactor.label>
-  <BioReactor.description>It is a bioreactor. It draws energy from living life.The amount of Nutrio to be injected into the living body is necessary.</BioReactor.description>
+  <BioReactor.label>BioReactor</BioReactor.label>
+  <!--<BioReactor.description>It is a bioreactor. It draws energy from living life.The amount of Nutrio to be injected into the living body is necessary.</BioReactor.description>-->
+  <BioReactor.description>Generates electricity from a living organism, will leave the occupant in a near death state of hypothermia when removed. Power output is propportional to the body size of the occupant. Nutrition is required to keep the occupant alive.</BioReactor.description>
   <BioReactor_Blueprint.label>Bio Reactor (blueprint)</BioReactor_Blueprint.label>
   <BioReactor_Frame.label>Bio Reactor (building)</BioReactor_Frame.label>
   <BioReactor_Frame.description>Living Battery</BioReactor_Frame.description>
@@ -13,7 +14,8 @@
   <!-- 3X3 Size -->
 
   <BioReactorCircleLarge.label>BioReactor (3X3)</BioReactorCircleLarge.label>
-  <BioReactorCircleLarge.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleLarge.description>
+  <!--<BioReactorCircleLarge.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleLarge.description>-->
+  <BioReactorCircleLarge.description>Generates electricity from a living organism, will leave the occupant in a near death state of hypothermia when removed. Power output is propportional to the body size of the occupant. Nutrition is required to keep the occupant alive.</BioReactorCircleLarge.description>
   <BioReactorCircleLarge_Blueprint.label>BioReactor (3X3) (blueprint)</BioReactorCircleLarge_Blueprint.label>
   <BioReactorCircleLarge_Frame.label>BioReactor (3X3) (building)</BioReactorCircleLarge_Frame.label>
   <BioReactorCircleLarge_Frame.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleLarge_Frame.description>
@@ -22,7 +24,8 @@
   <!-- 4X4 Size -->
 
   <BioReactorCircleEX.label>BioReactor (4X4)</BioReactorCircleEX.label>
-  <BioReactorCircleEX.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleEX.description>
+  <!--<BioReactorCircleEX.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleEX.description>-->
+  <BioReactorCircleEX.description>Generates electricity from a living organism, will leave the occupant in a near death state of hypothermia when removed. Power output is propportional to the body size of the occupant. Nutrition is required to keep the occupant alive.</BioReactorCircleEX.description>
   <BioReactorCircleEX_Blueprint.label>BioReactor (4X4) (blueprint)</BioReactorCircleEX_Blueprint.label>
   <BioReactorCircleEX_Frame.label>BioReactor (4X4) (building)</BioReactorCircleEX_Frame.label>
   <BioReactorCircleEX_Frame.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorCircleEX_Frame.description>
@@ -31,16 +34,17 @@
   <!-- 3X3 Size -->
 
   <BioReactorBig.label>BioReactor (3X3)</BioReactorBig.label>
-  <BioReactorBig.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorBig.description>
+  <!--<BioReactorBig.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorBig.description>-->
+  <BioReactorBig.description>Generates electricity from a living organism, will leave the occupant in a near death state of hypothermia when removed. Power output is propportional to the body size of the occupant. Nutrition is required to keep the occupant alive.</BioReactorBig.description>
   <BioReactorBig_Blueprint.label>BioReactor (3X3) (blueprint)</BioReactorBig_Blueprint.label>
   <BioReactorBig_Frame.label>BioReactor (3X3) (building)</BioReactorBig_Frame.label>
   <BioReactorBig_Frame.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorBig_Frame.description>
 
 
   <!-- 4X4 Size -->
-
   <BioReactorEx.label>BioReactor (4X4)</BioReactorEx.label>
-  <BioReactorEx.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorEx.description>
+  <!--<BioReactorEx.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorEx.description>-->
+  <BioReactorEx.description>Generates electricity from a living organism, will leave the occupant in a near death state of hypothermia when removed. Power output is propportional to the body size of the occupant. Nutrition is required to keep the occupant alive.</BioReactorEx.description>
   <BioReactorEx_Blueprint.label>BioReactor (4X4) (blueprint)</BioReactorEx_Blueprint.label>
   <BioReactorEx_Frame.label>BioReactor (4X4) (building)</BioReactorEx_Frame.label>
   <BioReactorEx_Frame.description>It is a bioreactor. It draws energy from living life. Power output is proportional to body size of the creature contained.</BioReactorEx_Frame.description>

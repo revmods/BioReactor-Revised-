@@ -14,9 +14,9 @@ namespace BioReactor
 {
     public class ITab_CustomRefuel : ITab
     {
-        private const float TopAreaHeight = 35f;
+        //private const float TopAreaHeight = 35f;
 
-        private Vector2 scrollPosition = default(Vector2);
+        //private Vector2 scrollPosition = default(Vector2);
 
         private static readonly Vector2 WinSize = new Vector2(300f, 480f);
 
@@ -47,7 +47,7 @@ namespace BioReactor
         public ITab_CustomRefuel()
         {
             size = WinSize;
-            labelKey = Translator.Translate("RefuelTab");
+            labelKey = Translator.TranslateWithBackup("Filter Tab", "Filter Tab");
         }
 
         protected override void FillTab()
@@ -61,7 +61,7 @@ namespace BioReactor
             Widgets.Label(new Rect(rect)
             {
                 height = 32f
-            }, Translator.Translate("RefuelTitle"));
+            }, Translator.TranslateWithBackup("RefuelTitle", "RefuelTitle"));
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
             ThingFilter thingFilter = null;

@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -81,6 +81,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BioReactor_Common.cs" />
+    <Compile Include="__Testbed.cs" />
     <Compile Include="CompMapRefuelable.cs" />
     <Compile Include="RefuelWorkGiverUtility.cs" />
     <Compile Include="ITab_CustomRefuel.cs" />

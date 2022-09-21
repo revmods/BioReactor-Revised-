@@ -3,6 +3,8 @@
 	<EnterBioReactor>Enter BioReactor</EnterBioReactor>
 	<Histolysis>Histolysis</Histolysis>
 	<HistolysisDesc>The living objects are melted in the reactor and replaced to biofuel.</HistolysisDesc>
+	<CycleColor>Cycle Color</CycleColor>
+	<CycleColorDesc>Cycle through a set of predefined colors.</CycleColorDesc>
 	<CarryToBioReactor>Carry {1_label} to BioReactor</CarryToBioReactor>
 	<CannotCarryToBioReactor>Cannot carry to BioReactor</CannotCarryToBioReactor>
 	<RefuelTitle>Refuel Filter</RefuelTitle>

@@ -10,7 +10,7 @@ namespace BioReactor
 
         public AltitudeLayer altitudeLayer = AltitudeLayer.MoteOverhead;
 
-        public CompProperties_SecondLayer()
+		public CompProperties_SecondLayer()
         {
             compClass = typeof(CompSecondLayer);
         }
