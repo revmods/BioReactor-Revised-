@@ -79,15 +79,6 @@ namespace BioReactor {
 				liquidDrawSize = reactorDef.liquidDrawSize;
 				maxGlowRadius = reactorDef.maxGlowRadius;
 			}
-
-			/*
-			ColorForStuff c = new ColorForStuff() {
-				null,
-				new Color(0, 0, 1f, 1f)
-			};
-
-			reactorDef.colorPerStuff.Add();
-			*/
 		}
 
 		public override void ExposeData() {
@@ -139,9 +130,10 @@ namespace BioReactor {
 				liquidColor = Common.liquidColorPreset[liquidColorPresetIndex];
 			}
 
-			CompProperties_Glower glowerProps = glower.props as CompProperties_Glower;
-			glowerProps.glowColor = Common.ColorToColorInt(liquidColor);
-			glowerProps.glowRadius = maxGlowRadius;
+			CompProperties_Glower glowerProps = new CompProperties_Glower {
+				glowColor = Common.ColorToColorInt(liquidColor),
+				glowRadius = maxGlowRadius
+			};
 			glower.Initialize(glowerProps);
 			glower.PostSpawnSetup(respawningAfterLoad);
 
