@@ -205,7 +205,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.8)</innerDrawOffset>
 		<liquidDrawCenter>(0.01, 0.25, 0.8)</liquidDrawCenter>
-		<liquidDrawSize>(2.4, 2.35)</liquidDrawSize>
+		<liquidDrawSize>(2.4, 1.65)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>3.5</bodySizeMax>
 		<maxGlowRadius>5</maxGlowRadius>
@@ -270,7 +270,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.8)</innerDrawOffset>
 		<liquidDrawCenter>(0.01, 0.25, 1.25)</liquidDrawCenter>
-		<liquidDrawSize>(3.5, 3)</liquidDrawSize>
+		<liquidDrawSize>(3.5, 2.4)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>8</bodySizeMax>
 		<maxGlowRadius>6</maxGlowRadius>
