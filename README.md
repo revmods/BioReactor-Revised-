@@ -15,6 +15,6 @@
 + added alert letters for when bioreactors break down, run out of fuel or are turned off while they contain a pawn
 - removed restriction that prevented mechanoids from being placed into bioreactors
 * rewrote mod settings to use Widgets calls instead of a Listing_Standard object
-+ filled suggestion/request from #1 , max body size is now listed in the information window (the "i" button)
++ filled suggestion/request from [ #1 ](https://github.com/solaris0115/BioReactor/issues/1), max body size is now listed in the information window (the "i" button)
 
 issue: during testing i encountered an error that had something to do with reserving pawns when there are multiple opened bioreactors, but i havent been able to reproduce this.
