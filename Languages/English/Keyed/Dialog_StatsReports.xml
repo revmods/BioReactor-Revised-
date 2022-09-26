@@ -9,7 +9,7 @@
 	<CannotCarryToBioReactor>Cannot carry to BioReactor</CannotCarryToBioReactor>
 	<RefuelTitle>Refuel Filter</RefuelTitle>
 	<RefuelTab>Filter Tab</RefuelTab>
-	
+
 	<CommandCopyBioReactorSettingsLabel>Copy settings</CommandCopyBioReactorSettingsLabel>
 	<CommandCopyBioReactorSettingsDesc>Copy this BioReactor's settings to the clipboard so you can paste them onto another BioReactor.</CommandCopyBioReactorSettingsDesc>
 

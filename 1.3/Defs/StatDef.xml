@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <StatDef>
+    <defName>MaxBodySize</defName>
+    <label>max body size</label>
+    <description>The maximum body size of an occupant that the BioReactor can contain.</description>
+    <category>Building</category>
+    <showIfUndefined>false</showIfUndefined>
+    <toStringStyle>FloatOne</toStringStyle>
+  </StatDef>
+
+</Defs>

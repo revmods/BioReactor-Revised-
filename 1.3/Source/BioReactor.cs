@@ -9,6 +9,8 @@ using Verse.Sound;
 using UnityEngine;
 using HarmonyLib;
 using RimWorld.Planet;
+using System.Net.NetworkInformation;
+using static HarmonyLib.Code;
 
 namespace BioReactor {
 	public class Building_BioReactor : Building_Casket, ISuspendableThingHolder {
@@ -23,6 +25,7 @@ namespace BioReactor {
 		public Color liquidColor;
 		public int liquidColorPresetIndex = 0;
 
+		public CompBioPowerPlant compBioPowerPlant;
 		public CompBioRefuelable compRefuelable;
 		public CompForbiddable forbiddable;
 		public CompGlower glower;
@@ -44,7 +47,35 @@ namespace BioReactor {
 		private Color currentHistolysisEndingColor;
 		private Color currentHistolysisColor;
 
-		private readonly PawnRenderFlags occupantRenderFlags = PawnRenderFlags.Cache | PawnRenderFlags.Clothes | PawnRenderFlags.Headgear;
+		private const PawnRenderFlags occupantRenderFlags = PawnRenderFlags.Cache | PawnRenderFlags.Clothes | PawnRenderFlags.Headgear;
+
+		private Hediff occupantMalnutition;
+		private float malnutitionSeverityTickValue = 1f / 60000f;
+
+		bool sentOutOfFuelLetter;
+		Letter outOfFuelletter;
+
+		bool sentBrokenDownLetter;
+		Letter brokenDownLetter;
+
+		bool sentTurnedOffLetter;
+		Letter turnedOffLetter;
+
+		public override void DrawExtraSelectionOverlays() {
+			if (def.specialDisplayRadius > 0.1f) {
+				//GenDraw.DrawRadiusRing(Position, def.specialDisplayRadius);
+			}
+
+			if (def.drawPlaceWorkersWhileSelected && def.PlaceWorkers != null) {
+				for (int i = 0; i < def.PlaceWorkers.Count; i++) {
+					//def.PlaceWorkers[i].DrawGhost(def, Position, Rotation, Color.white, this);
+				}
+			}
+
+			if (def.hasInteractionCell) {
+				//GenDraw.DrawInteractionCell(def, Position, Rotation);
+			}
+		}
 
 		public bool IsContainingThingPawn {
 			get {
@@ -71,6 +102,22 @@ namespace BioReactor {
 			}
 		}
 
+		public void SetHypothermia(Pawn pawn, float severity) {
+			if (!Common.modSettings.disableHypothermia) {
+				HediffSet hediffs = pawn.health.hediffSet;
+
+				// hypothermia seems to make sense assuming the bioreactor uses the body heat of the occupant
+				Hediff hypothermia = hediffs.HasHediff(HediffDefOf.Hypothermia) ? hediffs.GetFirstHediffOfDef(HediffDefOf.Hypothermia) : null;
+
+				if (hypothermia == null) {
+					hypothermia = pawn.health.AddHediff(HediffDefOf.Hypothermia, null, null, null);
+				}
+
+				// the bioreactor saps all the occupants body heat leaving them at the brink of death
+				hypothermia.Severity = severity;
+			}
+		}
+
 		public void Initialize(BioReactorDef reactorDef) {
 			// read values that are passed in via XML
 			if (reactorDef != null) {
@@ -80,14 +127,29 @@ namespace BioReactor {
 				maxGlowRadius = reactorDef.maxGlowRadius;
 			}
 
-			/*
-			ColorForStuff c = new ColorForStuff() {
-				null,
-				new Color(0, 0, 1f, 1f)
-			};
+			sentOutOfFuelLetter = false;
+			outOfFuelletter = LetterMaker.MakeLetter(
+				"BioReactorOutOfFuelLetterTitle".Translate(),
+				"BioReactorOutOfFuelLetterBody".Translate(),
+				LetterDefOf.NegativeEvent,
+				new LookTargets(this)
+			);
 
-			reactorDef.colorPerStuff.Add();
-			*/
+			sentBrokenDownLetter = false;
+			brokenDownLetter = LetterMaker.MakeLetter(
+				"BioReactorBrokenDownLetterTitle".Translate(),
+				"BioReactorBrokenDownLetterBody".Translate(),
+				LetterDefOf.NegativeEvent,
+				new LookTargets(this)
+			);
+
+			sentTurnedOffLetter = false;
+			turnedOffLetter = LetterMaker.MakeLetter(
+				"BioReactorTurnedOffLetterTitle".Translate(),
+				"BioReactorTurnedOffLetterBody".Translate(),
+				LetterDefOf.NegativeEvent,
+				new LookTargets(this)
+			);
 		}
 
 		public override void ExposeData() {
@@ -130,6 +192,7 @@ namespace BioReactor {
 			fillpct = 0;
 			histolysisPct = 0;
 
+			compBioPowerPlant = GetComp<CompBioPowerPlant>();
 			compRefuelable = GetComp<CompBioRefuelable>();
 			forbiddable = GetComp<CompForbiddable>();
 			glower = GetComp<CompGlower>();
@@ -139,13 +202,31 @@ namespace BioReactor {
 				liquidColor = Common.liquidColorPreset[liquidColorPresetIndex];
 			}
 
-			CompProperties_Glower glowerProps = glower.props as CompProperties_Glower;
-			glowerProps.glowColor = Common.ColorToColorInt(liquidColor);
-			glowerProps.glowRadius = maxGlowRadius;
+			CompProperties_Glower glowerProps = new CompProperties_Glower {
+				glowColor = Common.ColorToColorInt(liquidColor),
+				glowRadius = maxGlowRadius
+			};
 			glower.Initialize(glowerProps);
 			glower.PostSpawnSetup(respawningAfterLoad);
 
 			Initialize(def as BioReactorDef);
+		}
+
+		public override void PostMapInit() {
+			base.PostMapInit();
+
+			Pawn pawn = InnerPawn;
+			if (pawn != null) {
+				if (pawn.needs.TryGetNeed(NeedDefOf.Food) != null) {
+					pawn.needs.food.CurLevel = 0f;
+				}
+
+				if (pawn.needs.TryGetNeed(NeedDefOf.Rest) != null) {
+					pawn.needs.rest.CurLevel = 1f;
+				}
+
+				SetHypothermia(pawn, 0.99f);
+			}
 		}
 
 		public override bool TryAcceptThing(Thing thing, bool allowSpecialEffects = true) {
@@ -158,8 +239,36 @@ namespace BioReactor {
 				if (pawn != null && pawn.RaceProps.Humanlike) {
 					pawn.needs.mood.thoughts.memories.TryGainMemory(BioReactorThoughtDef.LivingBattery, null);
 				}
+
+				if (pawn.needs.TryGetNeed(NeedDefOf.Food) != null) {
+					pawn.needs.food.CurLevel = 0f;
+				}
+
+				if (pawn.needs.TryGetNeed(NeedDefOf.Rest) != null) {
+					pawn.needs.rest.CurLevel = 1f;
+				}
+
+				// messing around with other health conditions that arise after being placed in the bioreactor
+				HediffSet hediffs = pawn.health.hediffSet;
+
+				// was orginally added on ejection but moved here so you can see it on the occupants health tab
+				if (!Common.modSettings.disableHypothermia) {
+					// hypothermia seems to make sense assuming the bioreactor uses the body heat of the occupant
+					Hediff hypothermia = hediffs.HasHediff(HediffDefOf.Hypothermia) ? hediffs.GetFirstHediffOfDef(HediffDefOf.Hypothermia) : null;
+
+					if (hypothermia == null) {
+						hypothermia = pawn.health.AddHediff(HediffDefOf.Hypothermia, null, null, null);
+					}
+
+					// the bioreactor saps all the occupants body heat leaving them at the brink of death
+					hypothermia.Severity = 0.99f;
+				}
+
+				occupantMalnutition = hediffs.HasHediff(HediffDefOf.Malnutrition) ? hediffs.GetFirstHediffOfDef(HediffDefOf.Malnutrition) : null;
+
 				return true;
 			}
+
 			return false;
 		}
 
@@ -244,7 +353,16 @@ namespace BioReactor {
 				action = OnCycleColor
 			};
 
-			// Assets/Resources/textures/things/building/furniture/LampStanding
+			yield return new Command_Toggle {
+				defaultLabel = "CommandToggleAllowAutoRefuel".Translate(),
+				defaultDesc = "CommandToggleAllowAutoRefuelDesc".Translate(),
+				hotKey = KeyBindingDefOf.Command_ItemForbid,
+				icon = (compRefuelable.allowAutoRefuel ? TexCommand.ForbidOff : TexCommand.ForbidOn),
+				isActive = () => compRefuelable.allowAutoRefuel,
+				toggleAction = delegate {
+					compRefuelable.allowAutoRefuel = !compRefuelable.allowAutoRefuel;
+				}
+			};
 
 			foreach (Gizmo gizmo2 in CopyPasteGizmosFor(compRefuelable.inputSettings)) {
 				yield return gizmo2;
@@ -261,26 +379,6 @@ namespace BioReactor {
 					pawn.filth.GainFilth(filth_Slime);
 					if (pawn.RaceProps.IsFlesh) {
 						pawn.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
-
-						if (!Common.modSettings.disableHypothermia) {
-							// messing around with other health conditions that arise after being placed in the bioreactor
-							HediffSet hediffs = pawn.health.hediffSet;
-
-							// hypothermia seems to make since assuming the bioreactor uses the body heat of the occupant
-							Hediff hypothermia = null;
-
-							// adding hypothermia when it already exist doesnt seem to return the existing hediff 
-							if (!hediffs.HasHediff(HediffDefOf.Hypothermia)) {
-								hypothermia = pawn.health.AddHediff(HediffDefOf.Hypothermia, null, null, null);
-							}
-							else {
-								// find the existing hypothermia hediff when it already exists
-								hypothermia = hediffs.GetFirstHediffOfDef(HediffDefOf.Hypothermia);
-							}
-
-							// the bioreactor saps all the occupants body heat leaving them at the brink of death
-							hypothermia.Severity = 0.99f;
-						}
 					}
 				}
 			}
@@ -289,6 +387,9 @@ namespace BioReactor {
 			}
 			state = ReactorState.Empty;
 			fillpct = 0;
+
+			occupantMalnutition = null;
+
 			base.EjectContents();
 		}
 		public override void PostMake() {
@@ -339,9 +440,14 @@ namespace BioReactor {
 		}
 
 		public static Building_BioReactor FindBioReactorFor(Pawn p, Pawn traveler, bool ignoreOtherReservations = false) {
-            if (p.RaceProps.IsMechanoid) {
-                return null;
-            }
+			if (
+				(p.RaceProps.Humanlike && Common.modSettings.disableNonHumanLike) ||
+				(p.RaceProps.IsMechanoid && Common.modSettings.disableMechnoids) ||
+				(p.RaceProps.Insect && Common.modSettings.disableInsectoids) ||
+				((!p.RaceProps.Humanlike && !p.RaceProps.IsMechanoid && !p.RaceProps.Insect) && Common.modSettings.disableNonHumanLike)
+			) {
+				return null;
+			}
 
 			IEnumerable<ThingDef> enumerable = from def in DefDatabase<ThingDef>.AllDefs
 											   where typeof(Building_BioReactor).IsAssignableFrom(def.thingClass)
@@ -385,7 +491,70 @@ namespace BioReactor {
 			Map.glowGrid.MarkGlowGridDirty(glower.parent.Position);
 		}
 
+		public void DoMalnutitionTick(Pawn pawn) {
+			if (compBioPowerPlant != null && compBioPowerPlant.IsBrokenDown || !compBioPowerPlant.compRefuelable.HasFuel) {
+				HediffSet hediffs = pawn.health.hediffSet;
+				if (occupantMalnutition != null) {
+					occupantMalnutition = hediffs.HasHediff(HediffDefOf.Malnutrition) ? hediffs.GetFirstHediffOfDef(HediffDefOf.Malnutrition) : null;
+				}
+				else {
+					occupantMalnutition = pawn.health.AddHediff(HediffDefOf.Malnutrition);
+					occupantMalnutition.Severity = 0f;
+				}
+
+				occupantMalnutition.Severity += malnutitionSeverityTickValue * (Common.modSettings.malnutritionSeverityScale*Common.percentageReciprocal);
+				if (occupantMalnutition.Severity >= 1f) {
+					EjectContents();
+				}
+			}
+			else {
+				if (occupantMalnutition != null) {
+					occupantMalnutition.Severity -= malnutitionSeverityTickValue * (Common.modSettings.malnutritionSeverityScale * Common.percentageReciprocal);
+
+					if (occupantMalnutition.Severity == 0f) {
+						pawn.health.hediffSet.hediffs.Remove(occupantMalnutition);
+					}
+				}
+			}
+		}
+
 		public override void Tick() {
+			Pawn pawn = InnerPawn;
+			if (pawn != null && !Common.modSettings.disableMalnutrition) {
+				if (compRefuelable.Fuel == 0f) {
+					if (!sentOutOfFuelLetter) {
+						Find.LetterStack.ReceiveLetter(outOfFuelletter);
+						sentOutOfFuelLetter = true;
+					}
+				}
+				else {
+					sentOutOfFuelLetter = false;
+				}
+
+				if (compBioPowerPlant.IsBrokenDown) {
+					if (!sentBrokenDownLetter) {
+						Find.LetterStack.ReceiveLetter(brokenDownLetter);
+						sentBrokenDownLetter = true;
+					}
+				}
+				else {
+					sentBrokenDownLetter = false;
+				}
+
+				if (!compBioPowerPlant.PowerOn) {
+					if (!sentTurnedOffLetter) {
+						Find.LetterStack.ReceiveLetter(turnedOffLetter);
+						sentTurnedOffLetter = true;
+					}
+				} else {
+					sentTurnedOffLetter = false;
+				}
+
+				if (!pawn.Dead) {
+					DoMalnutitionTick(pawn);
+				}
+			}
+
 			currentHistolysisEndingColor = new Color(
 				0.7f,
 				0.2f,
@@ -400,7 +569,6 @@ namespace BioReactor {
 			switch (state) {
 				case ReactorState.Empty:
 					fillpct = 0;
-					SetGlowerColor(Common.ColorToColorInt(liquidColor), 0f);
 					break;
 				case ReactorState.StartFilling:
 					fillpct += 0.01f;
@@ -408,10 +576,8 @@ namespace BioReactor {
 						state = ReactorState.Full;
 						BioReactorSoundDef.Drowning.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
 					}
-					SetGlowerColor(Common.ColorToColorInt(liquidColor), maxGlowRadius);
 					break;
 				case ReactorState.Full:
-					SetGlowerColor(Common.ColorToColorInt(liquidColor), maxGlowRadius);
 					break;
 				case ReactorState.HistolysisStarting:
 					histolysisPct += 0.005f;
@@ -419,7 +585,6 @@ namespace BioReactor {
 						state = ReactorState.HistolysisEnding;
 						Histolysis();
 					}
-					SetGlowerColor(Common.ColorToColorInt(currentHistolysisColor), maxGlowRadius);
 					break;
 				case ReactorState.HistolysisEnding:
 					histolysisPct -= 0.01f;
@@ -427,15 +592,41 @@ namespace BioReactor {
 						histolysisPct = 0;
 						state = ReactorState.HistolysisDone;
 					}
-					SetGlowerColor(Common.ColorToColorInt(currentHistolysisEndingColor), maxGlowRadius);
 					break;
 				case ReactorState.HistolysisDone:
-					SetGlowerColor(Common.ColorToColorInt(currentHistolysisEndingColor), maxGlowRadius);
 					break;
 			}
 		}
 
 		public override void Draw() {
+			// move SetGlowerColor here because i dont think there would be a reason to change it more than 1 time per frame
+			// also gave it a separate switch statement just so its easier to move or remove
+			switch (state) {
+				case ReactorState.Empty:
+					SetGlowerColor(Common.ColorToColorInt(liquidColor), 0f);
+					break;
+
+				case ReactorState.StartFilling:
+					SetGlowerColor(Common.ColorToColorInt(liquidColor), maxGlowRadius);
+					break;
+
+				case ReactorState.Full:
+					SetGlowerColor(Common.ColorToColorInt(liquidColor), maxGlowRadius);
+					break;
+
+				case ReactorState.HistolysisStarting:
+					SetGlowerColor(Common.ColorToColorInt(currentHistolysisColor), maxGlowRadius);
+					break;
+
+				case ReactorState.HistolysisEnding:
+					SetGlowerColor(Common.ColorToColorInt(currentHistolysisEndingColor), maxGlowRadius);
+					break;
+
+				case ReactorState.HistolysisDone:
+					SetGlowerColor(Common.ColorToColorInt(currentHistolysisEndingColor), maxGlowRadius);
+					break;
+			}
+
 			switch (state) {
 				case ReactorState.Empty:
 					break;
@@ -488,28 +679,25 @@ namespace BioReactor {
 
 		public override void Print(SectionLayer layer) {
 			Printer_Plane.PrintPlane(
-				layer, 
+				layer,
 				GenThing.TrueCenter(
-					Position, 
+					Position,
 					this.Rotation,
 					this.RotatedSize,
 					11.7f
 				),
 				Graphic.drawSize,
-				Graphic.MatSingle, 
-				0, 
-				false, 
-				null, 
-				null, 
-				0f, //0.01f, 
-				0f
+				Graphic.MatSingle
 			);
 		}
 
 		public virtual void LiquidDraw(Color color, float fillPct) {
 			GenDraw.FillableBarRequest r = default(GenDraw.FillableBarRequest);
 			r.center = DrawPos + liquidDrawCenter;
-			r.size = liquidDrawSize;
+
+			// i guess because of the rotation or something, the values in the xml dont mean what you would expect them to mean
+			// swap x and y, now the first value in xml is the width and the second is the height
+			r.size = new Vector2(liquidDrawSize.y, liquidDrawSize.x);
 
 			r.fillPercent = fillPct;
 			r.filledMat = SolidColorMaterials.SimpleSolidColorMaterial(color, false);

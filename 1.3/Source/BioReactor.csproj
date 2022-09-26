@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Assemblies\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,15 +26,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\Harmony\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -81,8 +83,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BioReactorDef.cs" />
     <Compile Include="BioReactor_Common.cs" />
-    <Compile Include="__Testbed.cs" />
+    <Compile Include="BioReactor_Blueprint_Build.cs" />
+    <Compile Include="BioReactor_ModSettings.cs" />
+    <Compile Include="ITab_OccupantBio.cs" />
+    <Compile Include="ITab_OccupantNeeds.cs" />
+    <Compile Include="ITab_OccupantHeatlth.cs" />
     <Compile Include="CompMapRefuelable.cs" />
     <Compile Include="RefuelWorkGiverUtility.cs" />
     <Compile Include="ITab_CustomRefuel.cs" />

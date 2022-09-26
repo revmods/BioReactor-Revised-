@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+	<BioReactorOutOfFuelLetterTitle>BioReactor Out Of Fuel</BioReactorOutOfFuelLetterTitle>
+	<BioReactorOutOfFuelLetterBody>A BioReactor has ran out of fuel. If it is not refueled soon, the occupant may die.</BioReactorOutOfFuelLetterBody>
+
+	<BioReactorBrokenDownLetterTitle>BioReactor Out Of Fuel</BioReactorBrokenDownLetterTitle>
+	<BioReactorBrokenDownLetterBody>A BioReactor has broken down. If it is not fixed soon, the occupant may die.</BioReactorBrokenDownLetterBody>
+
+	<BioReactorTurnedOffLetterTitle>Occupied BioReactor Turned Off</BioReactorTurnedOffLetterTitle>
+	<BioReactorTurnedOffLetterBody>An Occupied BioReactor was turned off. If it is not turned on soon, the occupant may die.</BioReactorTurnedOffLetterBody>
+
+</LanguageData>

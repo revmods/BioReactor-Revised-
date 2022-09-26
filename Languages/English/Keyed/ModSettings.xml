@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+	<TotalPowerOutputScaleLabel>Total Power Output Scale (%)</TotalPowerOutputScaleLabel>
+
+	<MakeFuelOnHistolysisLabel>Make Fuel On Histolysis</MakeFuelOnHistolysisLabel>
+
+	<DisableHypothermiaLabel>Disable Hypothermia</DisableHypothermiaLabel>
+
+	<DisableHumanLikeLabel>Disable HumanLike</DisableHumanLikeLabel>
+	<HumanLikePowerOutputScaleLabel>HumanLike Power Output Scale (%)</HumanLikePowerOutputScaleLabel>
+
+	<DisableNonHumanLikeLabel>Disable NonHumanLike</DisableNonHumanLikeLabel>
+	<NonHumanLikePowerOutputScaleLabel>NonHumanLike Power Output Scale (%)</NonHumanLikePowerOutputScaleLabel>
+
+	<DisableInsectoidsLabel>Disable Insectoids</DisableInsectoidsLabel>
+	<InsectoidPowerOutputScaleLabel>Insectoid Power Output Scale (%)</InsectoidPowerOutputScaleLabel>
+
+	<DisableMechnoidsLabel>Disable Mechnoids</DisableMechnoidsLabel>
+	<MechnoidPowerOutputScaleLabel>Mechnoid Power Output Scale (%)</MechnoidPowerOutputScaleLabel>
+
+	<DisableMalnutritionLabel>Disable Malnutrition</DisableMalnutritionLabel>
+	<MalnutritionSeverityScaleLabel>Malnutrition Severity Scale (%)</MalnutritionSeverityScaleLabel>
+
+</LanguageData>

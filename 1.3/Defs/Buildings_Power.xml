@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<ThingDef Class="BioReactor.BioReactorDef" Name="BioReactorBase" ParentName="BuildingBase" Abstract="True">
+		<thingClass>BioReactor.Building_BioReactor</thingClass>
 		<defName>BioReactorBase</defName>
 		<label>Bio Reactor</label>
 		<!-- descriptions defined in /Languages\English\DefInjected\ThingDef/Buildings_Power.xml -->
 		<description>It is a bioreactor. It draws energy from living life, leaving it in a near death state of hypothermia if removed. Power output is proportional to body size of the creature contained. The amount of Nutrio to be injected into the living body is necessary.</description>
-		<thingClass>BioReactor.Building_BioReactor</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<altitudeLayer>Pawn</altitudeLayer>
 		<passability>PassThroughOnly</passability>
@@ -23,8 +23,12 @@
 		<defaultPlacingRot>South</defaultPlacingRot>		
 		<inspectorTabs>
 			<li>BioReactor.ITab_CustomRefuel</li>
+			<li>BioReactor.ITab_OccupantHeatlth</li>
+			<li>BioReactor.ITab_OccupantNeeds</li>
+			<li>BioReactor.ITab_OccupantBio</li>
 		</inspectorTabs>
 		<building>
+			<blueprintClass>BioReactor.BioReactor_Blueprint_Build</blueprintClass>
 			<ai_chillDestination>false</ai_chillDestination>
 			<fixedStorageSettings>
 				<priority>Critical</priority>
@@ -66,7 +70,7 @@
 			<li>BiofuelRefining</li>
 		</researchPrerequisites>
 		<destroyable>true</destroyable>
-		<rotatable>true</rotatable>		
+		<rotatable>true</rotatable>
 	</ThingDef>
 
 	<ThingDef Class="BioReactor.BioReactorDef" Name="BioReactorCircleBase" ParentName="BioReactorBase" Abstract="True">
@@ -141,7 +145,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.62)</innerDrawOffset>
 		<liquidDrawCenter>(0, 0.25, 0.62)</liquidDrawCenter>
-		<liquidDrawSize>(1.6, 1.18)</liquidDrawSize>
+		<liquidDrawSize>(1.18, 1.6)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>1.3</bodySizeMax>
 		<maxGlowRadius>4</maxGlowRadius>
@@ -153,7 +157,7 @@
 		<graphicData>
 			<texPath>Things/Building/BioReactor_CircleType</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(10, 10)</drawSize>
+			<drawSize>(14, 10)</drawSize>
 			<drawRotated>false</drawRotated>
 		</graphicData>
 		<statBases>
@@ -196,7 +200,7 @@
 				<graphicData>
 					<texPath>Things/Building/BioReactor_CircleType_Floor</texPath>
 					<graphicClass>Graphic_Single</graphicClass>
-					<drawSize>(10, 10)</drawSize>
+					<drawSize>(14, 10)</drawSize>
 					<drawRotated>false</drawRotated>
 				</graphicData>
 				<offset>(0,0,0)</offset>
@@ -205,7 +209,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.8)</innerDrawOffset>
 		<liquidDrawCenter>(0.01, 0.25, 0.8)</liquidDrawCenter>
-		<liquidDrawSize>(2.4, 2.35)</liquidDrawSize>
+		<liquidDrawSize>(2.35, 2.4)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>3.5</bodySizeMax>
 		<maxGlowRadius>5</maxGlowRadius>
@@ -217,7 +221,7 @@
 		<graphicData>
 			<texPath>Things/Building/BioReactor_CircleType</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(14, 14)</drawSize>
+			<drawSize>(18, 14)</drawSize>
 			<drawRotated>false</drawRotated>
 		</graphicData>
 		<statBases>
@@ -261,7 +265,7 @@
 				<graphicData>
 					<texPath>Things/Building/BioReactor_CircleType_Floor</texPath>
 					<graphicClass>Graphic_Single</graphicClass>
-					<drawSize>(14,14)</drawSize>
+					<drawSize>(18,14)</drawSize>
 					<drawRotated>false</drawRotated>
 				</graphicData>
 				<offset>(0,0,0)</offset>
@@ -270,7 +274,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.8)</innerDrawOffset>
 		<liquidDrawCenter>(0.01, 0.25, 1.25)</liquidDrawCenter>
-		<liquidDrawSize>(3.5, 3)</liquidDrawSize>
+		<liquidDrawSize>(3.05, 3.5)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>8</bodySizeMax>
 		<maxGlowRadius>6</maxGlowRadius>
@@ -336,7 +340,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.4)</innerDrawOffset>
 		<liquidDrawCenter>(0, 0.25, 0.5)</liquidDrawCenter>
-		<liquidDrawSize>(2.3, 2.65)</liquidDrawSize>
+		<liquidDrawSize>(2.65, 2.3)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>3.5</bodySizeMax>
 		<maxGlowRadius>5</maxGlowRadius>
@@ -401,7 +405,7 @@
 		</comps>
 		<innerDrawOffset>(0, -0.05, 0.4)</innerDrawOffset>
 		<liquidDrawCenter>(0, 0.25, 0.5)</liquidDrawCenter>
-		<liquidDrawSize>(2.5, 3.65)</liquidDrawSize>
+		<liquidDrawSize>(3.65, 2.5)</liquidDrawSize>
 		<bodySizeMin>0</bodySizeMin>
 		<bodySizeMax>8</bodySizeMax>
 		<maxGlowRadius>6</maxGlowRadius>
@@ -558,6 +562,16 @@
 			</li>
 		</stages>
 	</ThoughtDef>
+
+	<LetterDef Name="BioReactorOutOfFuel">
+		<defName>BioReactorOutOfFuel</defName>
+		<color>(204, 115, 115)</color>
+		<flashColor>(255, 85, 85)</flashColor>
+		<flashInterval>6</flashInterval>
+		<bounce>true</bounce>
+		<arriveSound>LetterArrive_BadUrgentBig</arriveSound>
+		<pauseMode>MajorThreat</pauseMode>
+	</LetterDef>
 
 	<DesignatorDropdownGroupDef>
 		<defName>BioReactor_CircleType</defName>
